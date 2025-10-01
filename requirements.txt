@@ -1,0 +1,6 @@
+Flask
+opencv-python
+pytesseract
+spacy
+ultralytics
+numpy

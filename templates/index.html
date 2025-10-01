@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image Content Extractor</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 90%;
+        max-width: 950px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      form {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      input[type="file"],
+      input[type="submit"] {
+        padding: 10px 15px;
+        border-radius: 6px;
+        margin: 5px;
+        border: 1px solid #ccc;
+      }
+      input[type="submit"] {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      input[type="submit"]:hover {
+        background: #0056b3;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+        margin: 20px auto;
+        border-radius: 10px;
+        border: 2px solid #ddd;
+      }
+      .section {
+        margin-top: 25px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        background: #f9f9f9;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .section h3 {
+        margin-top: 0;
+        color: #444;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 5px;
+      }
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      li {
+        background: #eef3f7;
+        margin: 5px 0;
+        padding: 8px 12px;
+        border-radius: 6px;
+      }
+      .entity-label {
+        font-weight: bold;
+        color: #007bff;
+      }
+      .entity-value {
+        background: #e8f0fe;
+        padding: 2px 6px;
+        margin: 0 5px;
+        border-radius: 4px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Image Content Extractor</h2>
+      <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" required />
+        <input type="submit" value="Analyze Image" />
+      </form>
+
+      {% if img_filename %}
+      <img
+        src="{{ url_for('static', filename=img_filename) }}"
+        alt="Uploaded Image"
+      />
+      {% endif %} {% if report %} {% for key, value in report.items() %}
+      <div class="section">
+        <h3>{{ key }}</h3>
+        {% if value is string %}
+        <p>{{ value }}</p>
+        {% elif key == "Entities" %}
+        <ul>
+          {% for label, ents in value.items() %}
+          <li>
+            <span class="entity-label">{{ label }}:</span>
+            {% for ent in ents %}
+            <span class="entity-value">{{ ent }}</span>
+            {% endfor %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <ul>
+          {% for item in value %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %} {% endif %}
+    </div>
+  </body>
+</html>
