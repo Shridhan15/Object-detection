@@ -1,5 +1,10 @@
-# nlp_module.py
 import spacy
+
+# spaCy is a Python library for NLP.
+# It helpsunderstand text by:
+# Breaking text into words or tokens
+# Identifying important entities like people, organizations, places, dates, and numbers
+# Tagging parts of speech (noun, verb, etc.) and understanding word relationships
 
 # Load English NLP model
 nlp = spacy.load("en_core_web_sm")

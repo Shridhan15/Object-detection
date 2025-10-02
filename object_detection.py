@@ -1,4 +1,3 @@
-# object_detection.py
 from ultralytics import YOLO
 
 # Load a pre-trained YOLOv8 model.
