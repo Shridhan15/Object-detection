@@ -1,26 +1,34 @@
-# ocr_module.py
 import cv2
-import numpy as np
-
-def preprocess_image(image_path):
-    img = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    # Optional: resize for better OCR
-    gray = cv2.resize(gray, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_CUBIC)
-    
-    # Noise removal
-    gray = cv2.medianBlur(gray, 3)
-    
-    # Thresholding
-    _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    
-    return thresh
-# ocr_module.py (continued)
 import pytesseract
+# Tesseract is an open-source OCR engine
+# It can read text from images and return it.
+# Tesseract must be  installed on your system for this to work.
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Windows path
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-def extract_text(image):
-    text = pytesseract.image_to_string(image)
-    return text
+def extract_text(image_path):
+    """
+    Extract text from an image using pytesseract OCR.
+
+    Steps in simple terms:
+    1. Load the image from the given file path.
+    2. Convert the image to grayscale (OCR works better on simpler images).
+    3. Send the image to Tesseract OCR to "read" the text.
+    4. Return the text as a Python string (empty string if nothing is found).
+
+    Example:
+        Image: [Picture with "Invoice #12345"]
+        Output: "Invoice #12345"
+    """
+    # Step 1: Read the image
+    img = cv2.imread(image_path)
+
+    # Step 2:  Convert the image to grayscale (black and white shades only) 
+    # so that Tesseract OCR can focus on the text shapes.
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Step 3: Apply Tesseract OCR to detect text
+    text = pytesseract.image_to_string(gray)
+
+    # Step 4: Return cleaned text
+    return text.strip()

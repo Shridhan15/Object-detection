@@ -1,61 +1,37 @@
-import cv2
-import pytesseract
-from ultralytics import YOLO
-import spacy
-
-# Load YOLOv8n (small pretrained model)
-model = YOLO("yolov8n.pt")
-
-# Load spaCy NLP model
-nlp = spacy.load("en_core_web_sm")
-
-# Path to tesseract (adjust if needed)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
-def extract_text(image_path):
-    """Extract text from image using pytesseract"""
-    img = cv2.imread(image_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    text = pytesseract.image_to_string(gray)
-    return text.strip()
-
-def detect_objects(image_path):
-    """Detect objects in image using YOLOv8"""
-    results = model(image_path)
-    objects = []
-    for r in results[0].boxes.cls:
-        label = results[0].names[int(r)]
-        if label not in objects:
-            objects.append(label)
-    return objects
-
-def analyze_text_with_nlp(text):
-    """Extract entities from OCR text using spaCy"""
-    doc = nlp(text)
-    entities = {}
-    for ent in doc.ents:
-        if ent.label_ not in entities:
-            entities[ent.label_] = []
-        entities[ent.label_].append(ent.text)
-    return entities
+# Here we combines OCR, NLP, and object detection to analyze an image
+from ocr_module import extract_text       # Extracts text from the image
+from nlp_module import analyze_text       # Extracts entities from the text
+from object_detection import detect_objects  # Detects objects in the image
 
 def analyze_image(image_path):
-    """Return a friendly report of text + objects + entities"""
+    """
+    Analyze an image and return a report:
+     Extracted text (if any)
+     Named entities found in the text (like dates, organizations, places)
+     Objects detected in the image (like person, car, dog)
+
+    Steps explained in simple terms:
+     First, use OCR to read any text in the image.
+     If text is found, use NLP to identify important pieces of information (entities).
+     Then, use object detection to find common objects in the image.
+     Combine all results into a single report.
+    """
     report = {}
 
-    # OCR
+    #  OCR to extract text from the image
     text = extract_text(image_path)
     if text:
-        report["Text Found"] = text
+        report["Text Found"] = text  # Save the extracted text in the report
 
-        # Run NLP only if text exists
-        entities = analyze_text_with_nlp(text)
+        #  NLP to extract named entities from text
+        entities = analyze_text(text)
         if entities:
-            report["Entities"] = entities
+            report["Entities"] = entities  # Save entities in the report
 
-    # Object Detection
+    #  Object Detection to detect objects in the image
     objects = detect_objects(image_path)
     if objects:
-        report["Objects Detected"] = objects
+        report["Objects Detected"] = objects  # Save object labels in the report
 
+    # Return the report
     return report

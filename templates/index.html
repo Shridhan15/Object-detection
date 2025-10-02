@@ -9,6 +9,7 @@
         margin: 0;
         padding: 0;
       }
+
       .container {
         width: 90%;
         max-width: 950px;
@@ -18,14 +19,17 @@
         border-radius: 15px;
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
       }
+
       h2 {
         text-align: center;
         color: #333;
       }
+
       form {
         text-align: center;
         margin-bottom: 20px;
       }
+
       input[type="file"],
       input[type="submit"] {
         padding: 10px 15px;
@@ -33,6 +37,7 @@
         margin: 5px;
         border: 1px solid #ccc;
       }
+
       input[type="submit"] {
         background: #007bff;
         color: white;
@@ -43,6 +48,7 @@
       input[type="submit"]:hover {
         background: #0056b3;
       }
+
       img {
         max-width: 100%;
         display: block;
@@ -50,6 +56,7 @@
         border-radius: 10px;
         border: 2px solid #ddd;
       }
+
       .section {
         margin-top: 25px;
         padding: 15px 20px;
@@ -63,6 +70,7 @@
         border-bottom: 2px solid #eee;
         padding-bottom: 5px;
       }
+
       ul {
         list-style: none;
         padding-left: 0;
@@ -73,6 +81,7 @@
         padding: 8px 12px;
         border-radius: 6px;
       }
+
       .entity-label {
         font-weight: bold;
         color: #007bff;
@@ -89,21 +98,31 @@
   <body>
     <div class="container">
       <h2>Image Content Extractor</h2>
+
+      <!-- Upload form -->
       <form method="POST" enctype="multipart/form-data">
         <input type="file" name="image" required />
         <input type="submit" value="Analyze Image" />
       </form>
 
+      <!-- Show uploaded image if it exists -->
       {% if img_filename %}
       <img
         src="{{ url_for('static', filename=img_filename) }}"
         alt="Uploaded Image"
       />
-      {% endif %} {% if report %} {% for key, value in report.items() %}
+      {% endif %}
+
+      <!-- Show analysis report  -->
+      {% if report %} {% for key, value in report.items() %}
       <div class="section">
         <h3>{{ key }}</h3>
+
+        <!-- plain OCR text -->
         {% if value is string %}
         <p>{{ value }}</p>
+
+        <!--  NLP entities -->
         {% elif key == "Entities" %}
         <ul>
           {% for label, ents in value.items() %}
@@ -115,6 +134,8 @@
           </li>
           {% endfor %}
         </ul>
+
+        <!-- list of objects detected -->
         {% else %}
         <ul>
           {% for item in value %}

@@ -1,16 +1,40 @@
 # nlp_module.py
 import spacy
 
+# Load English NLP model
 nlp = spacy.load("en_core_web_sm")
 
-def process_text(text):
+def analyze_text(text):
+    """
+    Function analyzes text using spaCy NLP and extracts Named Entities.
+
+     The function looks through the text and finds important information
+      like dates, organizations, places, numbers, etc. and then groups them by type and returns them in a dictionary.
+
+    Example output:
+    {
+        "QUANTITY": ["4", "423-612-2102"],   
+        # Things like amounts or measurable values 
+        # (can be phone numbers).
+
+        "DATE": ["May 2024", "June 2025 - August 2025"],  
+        # Dates, time ranges, or periods.
+
+        "ORG": ["Microsoft Office", "ABC Company"],  
+        # Names of companies, organizations, or institutions.
+
+        "CARDINAL": ["3.5"],  
+        # Plain numbers without a unit, like count, or ranking.
+
+        "GPE": ["Anytown", "Anytown USA"]  
+        # Geographic (cities, states, countries).
+    }
+
+    Returns a dictionary where each key is the type of information (DATE, ORG, etc.)
+              and the value is a list of the actual text found.
+    """
     doc = nlp(text)
-    
     entities = {}
     for ent in doc.ents:
-        entities[ent.label_] = entities.get(ent.label_, []) + [ent.text]
-    
-    # Optional: return cleaned text too
-    cleaned_text = " ".join([token.text for token in doc if not token.is_punct])
-    
-    return cleaned_text, entities
+        entities.setdefault(ent.label_, []).append(ent.text)
+    return entities
