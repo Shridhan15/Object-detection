@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Image Content Extractor</title>
+    <title>Image Recognition and Information Extraction</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -93,6 +93,18 @@
         border-radius: 4px;
         display: inline-block;
       }
+
+      /* Handwriting section */
+      .handwriting {
+        background: #fff8e1;
+        border-left: 5px solid #fbc02d;
+      }
+
+      /* Caption section styling */
+      .caption {
+        background: #e9f7ef;
+        border-left: 5px solid #28a745;
+      }
     </style>
   </head>
   <body>
@@ -105,7 +117,7 @@
         <input type="submit" value="Analyze Image" />
       </form>
 
-      <!-- Show uploaded image if it exists -->
+      <!-- Show uploaded image -->
       {% if img_filename %}
       <img
         src="{{ url_for('static', filename=img_filename) }}"
@@ -113,16 +125,16 @@
       />
       {% endif %}
 
-      <!-- Show analysis report  -->
+      <!-- Show analysis report -->
       {% if report %} {% for key, value in report.items() %}
-      <div class="section">
+      <div
+        class="section {% if key == 'Handwritten Text Found' %}handwriting{% endif %} {% if key == 'Image Caption' %}caption{% endif %}"
+      >
         <h3>{{ key }}</h3>
 
-        <!-- plain OCR text -->
         {% if value is string %}
         <p>{{ value }}</p>
 
-        <!--  NLP entities -->
         {% elif key == "Entities" %}
         <ul>
           {% for label, ents in value.items() %}
@@ -135,7 +147,6 @@
           {% endfor %}
         </ul>
 
-        <!-- list of objects detected -->
         {% else %}
         <ul>
           {% for item in value %}
