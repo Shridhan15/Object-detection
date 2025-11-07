@@ -1,6 +1,10 @@
-Flask
-opencv-python
+flask
+ultralytics
+easyocr
+transformers
+torch
+torchvision
+pillow
 pytesseract
 spacy
-ultralytics
-
+opencv-python
